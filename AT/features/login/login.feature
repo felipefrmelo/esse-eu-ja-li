@@ -1,11 +1,12 @@
-Feature: Logar no sistema
+#language: pt
+Funcionalidade: Logar no sistema
 
-  Scenario Outline: Logar com sucesso
+  Esquema do Cenário: Logar com sucesso
 
-     Given Um cliente na pagina de login
-     When o cliente faz o login com "<email>" e "<senha>"
-     Then ele deve ser redireciona para a listagem de livros
+     Dado Um cliente na pagina de login
+     Quando o cliente faz o login com "<email>" e "<senha>"
+     Então ele deve ser redireciona para a listagem de livros
 
-     Examples: Clientes de testes
+     Exemplos: Clientes de teste
        | email         | senha |
        | test@test.com | senha1234 |
