@@ -12,10 +12,14 @@ impl UserRepository for UserRepositoryInMemory {
             .find(|user| user.email == email.to_string())
     }
 
-    fn new() -> Self {
-        let user = User::new("test@test.com", "1234566", "test");
+    fn insert(&mut self, user: User) {
+        self.users.push(user);
+    }
 
-        let users: Vec<User> = vec![user];
+    fn new() -> Self {
+        let users: Vec<User> = vec![];
         Self { users }
     }
 }
+
+impl UserRepositoryInMemory {}

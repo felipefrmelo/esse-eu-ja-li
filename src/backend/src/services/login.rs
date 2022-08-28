@@ -2,8 +2,9 @@ pub use crate::domain::{token::Token, user::User};
 pub use crate::infra::user_repository::UserRepositoryInMemory;
 
 pub trait UserRepository {
-    fn find_user_by_email(&self, email: &str) -> Option<&User>;
     fn new() -> Self;
+    fn find_user_by_email(&self, email: &str) -> Option<&User>;
+    fn insert(&mut self, user: User);
 }
 
 #[derive(PartialEq, Debug)]
@@ -37,20 +38,44 @@ mod tests_services {
         String::from("test_token")
     }
 
+    fn make_fake_user() -> (&'static str, &'static str, User) {
+        let email = "test@test.com";
+        let password = "1234566";
+        let name = "test";
+        let user = User::new(email, password, name);
+
+        (email, name, user)
+    }
+
     #[test]
     fn should_create_a_token_when_give_a_valid_credentials() {
         let token_expected = Token {
             access_token: "test_token".to_string(),
         };
 
-        let email = "test@test.com";
-        let password = "1234566";
+        let (email, password, user) = make_fake_user();
 
-        let repo = UserRepositoryInMemory::new();
+        let mut repo = UserRepositoryInMemory::new();
+
+        repo.insert(user);
 
         let token = handle(email, password, generate_token, repo).expect("token should be valid");
 
         assert_eq!(token, token_expected);
+    }
+
+    #[test]
+    fn should_return_a_error_if_password_is_wrong() {
+        let (email, _, user) = make_fake_user();
+        let password = "wrongpassword";
+
+        let mut repo = UserRepositoryInMemory::new();
+
+        repo.insert(user);
+
+        let token = handle(email, password, generate_token, repo);
+
+        assert_eq!(token, Err(LoginError::InvalidCrendetias));
     }
 
     #[test]
