@@ -1,9 +1,4 @@
-pub use crate::domain::user::User;
-
-#[derive(PartialEq, Debug)]
-pub struct Token {
-    access_token: String,
-}
+pub use crate::domain::{token::Token, user::User};
 
 trait UserRepository {
     fn findUserByEmail(&self, email: &str) -> Option<&User>;

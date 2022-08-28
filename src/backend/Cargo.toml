@@ -6,3 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[package.metadata.precommit]
+fmt = "cargo fmt -- --write-mode diff 2>&1"
+test = "cargo test 2>&1"
