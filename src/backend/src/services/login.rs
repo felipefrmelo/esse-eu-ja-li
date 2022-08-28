@@ -1,5 +1,5 @@
 pub use crate::domain::{token::Token, user::User};
-pub use crate::infra::{password_hash, user_repository::UserRepositoryInMemory};
+pub use crate::adapters::{password_hash, user_repository::UserRepositoryInMemory};
 
 pub trait UserRepository {
     fn new() -> Self;
@@ -13,18 +13,18 @@ fn handle(
     generate_token: fn(id: &str) -> String,
     repo: impl UserRepository,
 ) -> Result<Token, LoginError> {
-    let user: Option<&User> = repo.find_user_by_email(email);
+    let user = repo.find_user_by_email(email);
 
-    let user = verify_user(user)?;
+    let user = check_user(user)?;
 
-    verify_password(password, &user.password)?;
+    check_password(password, &user.password)?;
 
     Ok(Token {
         access_token: generate_token(&user.id),
     })
 }
 
-fn verify_user(user_opt: Option<&User>) -> Result<&User, LoginError> {
+fn check_user(user_opt: Option<&User>) -> Result<&User, LoginError> {
     if user_opt.is_none() {
         return Err(LoginError::InvalidCrendetias);
     }
@@ -32,7 +32,7 @@ fn verify_user(user_opt: Option<&User>) -> Result<&User, LoginError> {
     Ok(user_opt.unwrap())
 }
 
-fn verify_password(password: &str, password_hash: &str) -> Result<(), LoginError> {
+fn check_password(password: &str, password_hash: &str) -> Result<(), LoginError> {
     if !password_hash::verify(password, password_hash) {
         return Err(LoginError::InvalidCrendetias);
     }

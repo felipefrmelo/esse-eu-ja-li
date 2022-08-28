@@ -1,6 +1,6 @@
+mod adapters;
 mod domain;
 mod services;
-mod infra;
 
 pub use crate::services::login;
 
