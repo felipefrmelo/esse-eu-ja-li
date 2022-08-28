@@ -1,15 +1,10 @@
 pub use crate::domain::{token::Token, user::User};
-pub use crate::infra::user_repository::UserRepositoryInMemory;
+pub use crate::infra::{password_hash, user_repository::UserRepositoryInMemory};
 
 pub trait UserRepository {
     fn new() -> Self;
     fn find_user_by_email(&self, email: &str) -> Option<&User>;
     fn insert(&mut self, user: User);
-}
-
-#[derive(PartialEq, Debug)]
-enum LoginError {
-    InvalidCrendetias,
 }
 
 fn handle(
@@ -20,13 +15,33 @@ fn handle(
 ) -> Result<Token, LoginError> {
     let user: Option<&User> = repo.find_user_by_email(email);
 
-    if user.is_none() {
+    let user = verify_user(user)?;
+
+    verify_password(password, &user.password)?;
+
+    Ok(Token {
+        access_token: generate_token(&user.id),
+    })
+}
+
+fn verify_user(user_opt: Option<&User>) -> Result<&User, LoginError> {
+    if user_opt.is_none() {
         return Err(LoginError::InvalidCrendetias);
     }
 
-    Ok(Token {
-        access_token: generate_token("id"),
-    })
+    Ok(user_opt.unwrap())
+}
+
+fn verify_password(password: &str, password_hash: &str) -> Result<(), LoginError> {
+    if !password_hash::verify(password, password_hash) {
+        return Err(LoginError::InvalidCrendetias);
+    }
+    Ok(())
+}
+
+#[derive(PartialEq, Debug)]
+enum LoginError {
+    InvalidCrendetias,
 }
 
 #[cfg(test)]
@@ -41,10 +56,11 @@ mod tests_services {
     fn make_fake_user() -> (&'static str, &'static str, User) {
         let email = "test@test.com";
         let password = "1234566";
+        let password_hashed = &password_hash::hash(password);
         let name = "test";
-        let user = User::new(email, password, name);
+        let user = User::new(email, password_hashed, name);
 
-        (email, name, user)
+        (email, password, user)
     }
 
     #[test]
