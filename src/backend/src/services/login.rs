@@ -1,13 +1,8 @@
+pub use crate::domain::user::User;
+
 #[derive(PartialEq, Debug)]
 pub struct Token {
     access_token: String,
-}
-
-pub struct User {
-    id: String,
-    email: String,
-    password: String,
-    name: String,
 }
 
 trait UserRepository {
@@ -26,7 +21,6 @@ fn handle(
     generate_token: fn(id: &str) -> String,
     repo: impl UserRepository,
 ) -> Result<Token, LoginError> {
-
     let user: Option<&User> = repo.findUserByEmail(email);
 
     if user.is_none() {
