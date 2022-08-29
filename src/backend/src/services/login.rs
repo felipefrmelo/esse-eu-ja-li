@@ -1,10 +1,9 @@
-pub use crate::domain::{token::Token, user::User};
 pub use crate::adapters::{password_hash, user_repository::UserRepositoryInMemory};
+pub use crate::domain::{token::Token, user::User};
 
 pub trait UserRepository {
-    fn new() -> Self;
+    fn new(users: Vec<User>) -> Self;
     fn find_user_by_email(&self, email: &str) -> Option<&User>;
-    fn insert(&mut self, user: User);
 }
 
 fn handle(
@@ -66,14 +65,12 @@ mod tests_services {
     #[test]
     fn should_create_a_token_when_give_a_valid_credentials() {
         let token_expected = Token {
-            access_token: "test_token".to_string(),
+            access_token: generate_token(""),
         };
 
         let (email, password, user) = make_fake_user();
 
-        let mut repo = UserRepositoryInMemory::new();
-
-        repo.insert(user);
+        let repo = UserRepositoryInMemory::new(vec![user]);
 
         let token = handle(email, password, generate_token, repo).expect("token should be valid");
 
@@ -85,9 +82,7 @@ mod tests_services {
         let (email, _, user) = make_fake_user();
         let password = "wrongpassword";
 
-        let mut repo = UserRepositoryInMemory::new();
-
-        repo.insert(user);
+        let repo = UserRepositoryInMemory::new(vec![user]);
 
         let token = handle(email, password, generate_token, repo);
 
@@ -99,7 +94,7 @@ mod tests_services {
         let email = "notexist@test.com";
         let password = "1234566";
 
-        let repo = UserRepositoryInMemory::new();
+        let repo = UserRepositoryInMemory::new(vec![]);
 
         let token = handle(email, password, generate_token, repo);
 
