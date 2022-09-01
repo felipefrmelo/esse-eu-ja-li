@@ -16,5 +16,3 @@ impl UserRepository for UserRepositoryInMemory {
         Self { users }
     }
 }
-
-impl UserRepositoryInMemory {}

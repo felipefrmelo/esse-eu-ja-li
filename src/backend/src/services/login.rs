@@ -6,11 +6,11 @@ pub trait UserRepository {
     fn find_user_by_email(&self, email: &str) -> Option<&User>;
 }
 
-fn handle(
+pub fn handle(
     email: &str,
     password: &str,
     generate_token: fn(id: &str) -> String,
-    repo: impl UserRepository,
+    repo: &impl UserRepository,
 ) -> Result<Token, LoginError> {
     let user = repo.find_user_by_email(email);
 
@@ -21,6 +21,11 @@ fn handle(
     Ok(Token {
         access_token: generate_token(&user.id),
     })
+}
+
+#[derive(PartialEq, Debug)]
+pub enum LoginError {
+    InvalidCrendetias,
 }
 
 fn check_user(user_opt: Option<&User>) -> Result<&User, LoginError> {
@@ -36,11 +41,6 @@ fn check_password(password: &str, password_hash: &str) -> Result<(), LoginError>
         return Err(LoginError::InvalidCrendetias);
     }
     Ok(())
-}
-
-#[derive(PartialEq, Debug)]
-enum LoginError {
-    InvalidCrendetias,
 }
 
 #[cfg(test)]
@@ -72,7 +72,7 @@ mod tests_services {
 
         let repo = UserRepositoryInMemory::new(vec![user]);
 
-        let token = handle(email, password, generate_token, repo).expect("token should be valid");
+        let token = handle(email, password, generate_token, &repo).expect("token should be valid");
 
         assert_eq!(token, token_expected);
     }
@@ -84,7 +84,7 @@ mod tests_services {
 
         let repo = UserRepositoryInMemory::new(vec![user]);
 
-        let token = handle(email, password, generate_token, repo);
+        let token = handle(email, password, generate_token, &repo);
 
         assert_eq!(token, Err(LoginError::InvalidCrendetias));
     }
@@ -96,7 +96,7 @@ mod tests_services {
 
         let repo = UserRepositoryInMemory::new(vec![]);
 
-        let token = handle(email, password, generate_token, repo);
+        let token = handle(email, password, generate_token, &repo);
 
         assert_eq!(token, Err(LoginError::InvalidCrendetias));
     }
