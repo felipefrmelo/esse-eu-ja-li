@@ -3,9 +3,13 @@ use crate::domain::token::Token;
 use crate::domain::user::User;
 use crate::services::login;
 use crate::services::login::UserRepository;
+use actix_web::http::StatusCode;
+use actix_web::Responder;
 use actix_web::{
     body::MessageBody,
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
+    error,
+    http::header,
     web, App, Error, HttpResponse, HttpServer,
 };
 use serde::{Deserialize, Serialize};
@@ -29,15 +33,31 @@ impl TokenResponse {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+use derive_more::Display;
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Display)]
 enum MyError {
     Unauthorized(String),
+}
+
+impl error::ResponseError for MyError {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .insert_header(header::ContentType::json())
+            .body(self.to_string())
+    }
+
+    fn status_code(&self) -> StatusCode {
+        match self {
+            MyError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+        }
+    }
 }
 
 async fn auth(
     login_request: web::Json<LoginRequest>,
     repo: web::Data<UserRepositoryInMemory>,
-) -> HttpResponse {
+) -> Result<impl Responder, MyError> {
     let conn = repo.get_ref();
 
     match login::handle(
@@ -47,12 +67,9 @@ async fn auth(
         conn,
     ) {
         Ok(token) => {
-            return HttpResponse::Ok().json(TokenResponse::from_domain(token));
+            return Ok(web::Json(TokenResponse::from_domain(token)));
         }
-        Err(_) => {
-            return HttpResponse::Unauthorized()
-                .json(MyError::Unauthorized("Invalid Crendetias".to_string()))
-        }
+        Err(_) => return Err(MyError::Unauthorized("Unauthorized".to_string())),
     };
 }
 
