@@ -3,26 +3,13 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/BookRounded';
+import BookRounded from '@mui/icons-material/BookRounded';
 import Typography from '@mui/material/Typography';
-import background from '../img/dog-reading.jpg';
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Esse eu já li &hearts;
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import backgroundImg from '../img/dog-reading.jpg';
+import { Copyright } from '../components/copyright';
 
 export const SignIn = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,7 +29,7 @@ export const SignIn = () => {
         sm={4}
         md={7}
         sx={{
-          backgroundImage: `url(${background})`,
+          backgroundImage: `url(${backgroundImg})`,
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
@@ -59,7 +46,7 @@ export const SignIn = () => {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+            <BookRounded />
           </Avatar>
           <Typography component="h1" variant="h3">
             Esse eu já li
@@ -70,7 +57,7 @@ export const SignIn = () => {
               required
               fullWidth
               id="email"
-              label="Email Address"
+              label="Email"
               name="email"
               autoComplete="email"
               autoFocus
@@ -80,19 +67,19 @@ export const SignIn = () => {
               required
               fullWidth
               name="password"
-              label="Password"
+              label="Senha"
               type="password"
               id="password"
               autoComplete="current-password"
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label="Dica"
             />
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Login
             </Button>
-            <Copyright sx={{ mt: 5 }} />
+            <Copyright />
           </Box>
         </Box>
       </Grid>
