@@ -3,6 +3,7 @@ use crate::domain::token::Token;
 use crate::domain::user::User;
 use crate::services::login;
 use crate::services::login::UserRepository;
+use actix_cors::Cors;
 use actix_web::http::StatusCode;
 use actix_web::Responder;
 use actix_web::{
@@ -92,7 +93,16 @@ fn app() -> App<
         "test",
     )]);
 
-    App::new().app_data(web::Data::new(repo)).configure(config)
+    let cors = Cors::default()
+        .allowed_origin("http://localhost:3000")
+        .allowed_methods(vec!["GET", "POST"])
+        .allowed_header(header::CONTENT_TYPE)
+        .max_age(3600);
+
+    App::new()
+        .app_data(web::Data::new(repo))
+        .wrap(cors)
+        .configure(config)
 }
 
 #[actix_web::main]

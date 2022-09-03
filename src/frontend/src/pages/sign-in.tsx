@@ -10,15 +10,28 @@ import BookRounded from '@mui/icons-material/BookRounded';
 import Typography from '@mui/material/Typography';
 import backgroundImg from '../img/dog-reading.jpg';
 import { Copyright } from '../components/copyright';
+import Alert from '@mui/material/Alert';
+import { useEffect } from 'react';
+import { useAuthContext } from '../providers/auth';
 
-export const SignIn = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+interface SignInProps {
+  redirect: (path: string) => void;
+}
+
+export const SignIn = ({ redirect }: SignInProps) => {
+  const { user, login, error } = useAuthContext();
+
+  useEffect(() => {
+    if (user) redirect('/');
+  }, [user, redirect]);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email') as string;
+    const password = data.get('password') as string;
+
+    await login(email, password);
   };
 
   return (
@@ -79,6 +92,7 @@ export const SignIn = () => {
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Login
             </Button>
+            {error && <Alert severity="error">{error}</Alert>}
             <Copyright />
           </Box>
         </Box>
