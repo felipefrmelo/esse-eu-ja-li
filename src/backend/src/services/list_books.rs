@@ -1,24 +1,7 @@
+use crate::domain::book::Book;
+
 trait BookRepository {
     fn get_books_by_text(&self, query: &str) -> Vec<Book>;
-}
-
-#[derive(Clone)]
-pub struct Book {
-    id: String,
-    title: String,
-    description: String,
-    image: String,
-}
-
-impl Book {
-    pub fn new(id: String, title: String, description: String, image: String) -> Self {
-        Book {
-            id,
-            title,
-            description,
-            image,
-        }
-    }
 }
 
 fn handle_list_books(query: &str, repository: &impl BookRepository) -> Vec<Book> {
