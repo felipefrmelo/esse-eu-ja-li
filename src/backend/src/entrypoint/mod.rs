@@ -1,138 +1,26 @@
-use crate::adapters::{generate_jwt, password_hash, user_repository::UserRepositoryInMemory};
+pub mod auth;
+pub mod books;
+pub mod dtos;
+pub mod errors;
+
+use crate::adapters::{password_hash, user_repository::UserRepositoryInMemory};
 use crate::domain::book::Book;
-use crate::domain::token::Token;
 use crate::domain::user::User;
-use crate::services::list_books::{handle_list_books, BookRepository};
-use crate::services::login;
+use crate::entrypoint::auth::auth;
+use crate::entrypoint::books::{list_books, FakeBookRepository};
 use crate::services::login::UserRepository;
 use actix_cors::Cors;
-use actix_web::http::StatusCode;
-use actix_web::Responder;
+
 use actix_web::{
     body::MessageBody,
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-    error,
     http::header,
-    web, App, Error, HttpResponse, HttpServer,
+    web, App, Error, HttpServer,
 };
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Deserialize, Serialize)]
-struct LoginRequest {
-    email: String,
-    password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct TokenResponse {
-    access_token: String,
-}
-
-#[derive(Serialize, Deserialize)]
-struct BookResponse {
-    title: String,
-    description: String,
-    image: String,
-}
-
-impl BookResponse {
-    fn from_domain(book: &Book) -> Self {
-        BookResponse {
-            title: book.title.to_string(),
-            description: book.description.to_string(),
-            image: book.image.to_string(),
-        }
-    }
-}
-
-#[derive(Deserialize)]
-struct Query {
-    text: Option<String>,
-}
-
-impl TokenResponse {
-    fn from_domain(token: Token) -> Self {
-        TokenResponse {
-            access_token: token.access_token,
-        }
-    }
-}
-
-use derive_more::Display;
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Display)]
-enum MyError {
-    Unauthorized(String),
-}
-
-impl error::ResponseError for MyError {
-    fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.status_code())
-            .insert_header(header::ContentType::json())
-            .body(self.to_string())
-    }
-
-    fn status_code(&self) -> StatusCode {
-        match self {
-            MyError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
-        }
-    }
-}
-
-async fn list_books(
-    query: web::Query<Query>,
-    book_repos: web::Data<FakeBookRepository>,
-) -> impl Responder {
-    let conn = book_repos.get_ref();
-
-    let default_query = &"".to_string();
-    let text = query.text.as_ref().unwrap_or(default_query);
-
-    let books = handle_list_books(&text, conn);
-    let books_response: Vec<BookResponse> =
-        books.iter().map(|b| BookResponse::from_domain(b)).collect();
-
-    web::Json(books_response)
-}
-
-async fn auth(
-    login_request: web::Json<LoginRequest>,
-    repo: web::Data<UserRepositoryInMemory>,
-) -> Result<impl Responder, MyError> {
-    let conn = repo.get_ref();
-
-    match login::handle(
-        &login_request.email,
-        &login_request.password,
-        generate_jwt::encode,
-        conn,
-    ) {
-        Ok(token) => {
-            return Ok(web::Json(TokenResponse::from_domain(token)));
-        }
-        Err(_) => return Err(MyError::Unauthorized("Unauthorized".to_string())),
-    };
-}
 
 fn config(cfg: &mut web::ServiceConfig) {
     cfg.route("/auth", web::post().to(auth))
         .route("/books", web::get().to(list_books));
-}
-
-struct FakeBookRepository {
-    books: Vec<Book>,
-}
-
-impl FakeBookRepository {
-    pub fn new(books: Vec<Book>) -> Self {
-        Self { books }
-    }
-}
-
-impl BookRepository for FakeBookRepository {
-    fn get_books_by_text(&self, _: &str) -> Vec<Book> {
-        self.books.clone()
-    }
 }
 
 fn app() -> App<
@@ -179,6 +67,8 @@ pub async fn main() -> std::io::Result<()> {
 mod tests {
     use super::*;
     use actix_web::{http, test};
+
+    use crate::entrypoint::dtos::{BookResponse, LoginRequest, TokenResponse};
 
     #[actix_web::test]
     async fn test_should_login_user_correcty() {
