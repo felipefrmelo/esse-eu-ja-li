@@ -1,10 +1,10 @@
 use crate::domain::book::Book;
 
-trait BookRepository {
+pub trait BookRepository {
     fn get_books_by_text(&self, query: &str) -> Vec<Book>;
 }
 
-fn handle_list_books(query: &str, repository: &impl BookRepository) -> Vec<Book> {
+pub fn handle_list_books(query: &str, repository: &impl BookRepository) -> Vec<Book> {
     repository.get_books_by_text(query)
 }
 

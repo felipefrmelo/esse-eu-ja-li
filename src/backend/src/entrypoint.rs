@@ -1,6 +1,8 @@
 use crate::adapters::{generate_jwt, password_hash, user_repository::UserRepositoryInMemory};
+use crate::domain::book::Book;
 use crate::domain::token::Token;
 use crate::domain::user::User;
+use crate::services::list_books::{handle_list_books, BookRepository};
 use crate::services::login;
 use crate::services::login::UserRepository;
 use actix_cors::Cors;
@@ -24,6 +26,28 @@ struct LoginRequest {
 #[derive(Serialize, Deserialize)]
 struct TokenResponse {
     access_token: String,
+}
+
+#[derive(Serialize, Deserialize)]
+struct BookResponse {
+    title: String,
+    description: String,
+    image: String,
+}
+
+impl BookResponse {
+    fn from_domain(book: &Book) -> Self {
+        BookResponse {
+            title: book.title.to_string(),
+            description: book.description.to_string(),
+            image: book.image.to_string(),
+        }
+    }
+}
+
+#[derive(Deserialize)]
+struct Query {
+    text: Option<String>,
 }
 
 impl TokenResponse {
@@ -55,6 +79,22 @@ impl error::ResponseError for MyError {
     }
 }
 
+async fn list_books(
+    query: web::Query<Query>,
+    book_repos: web::Data<FakeBookRepository>,
+) -> impl Responder {
+    let conn = book_repos.get_ref();
+
+    let default_query = &"".to_string();
+    let text = query.text.as_ref().unwrap_or(default_query);
+
+    let books = handle_list_books(&text, conn);
+    let books_response: Vec<BookResponse> =
+        books.iter().map(|b| BookResponse::from_domain(b)).collect();
+
+    web::Json(books_response)
+}
+
 async fn auth(
     login_request: web::Json<LoginRequest>,
     repo: web::Data<UserRepositoryInMemory>,
@@ -75,7 +115,24 @@ async fn auth(
 }
 
 fn config(cfg: &mut web::ServiceConfig) {
-    cfg.route("/auth", web::post().to(auth));
+    cfg.route("/auth", web::post().to(auth))
+        .route("/books", web::get().to(list_books));
+}
+
+struct FakeBookRepository {
+    books: Vec<Book>,
+}
+
+impl FakeBookRepository {
+    pub fn new(books: Vec<Book>) -> Self {
+        Self { books }
+    }
+}
+
+impl BookRepository for FakeBookRepository {
+    fn get_books_by_text(&self, _: &str) -> Vec<Book> {
+        self.books.clone()
+    }
 }
 
 fn app() -> App<
@@ -99,8 +156,16 @@ fn app() -> App<
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600);
 
+    let book_repo = FakeBookRepository::new(vec![Book::new(
+        "1".to_string(),
+        "title 1".to_string(),
+        "description".to_string(),
+        "image".to_string(),
+    )]);
+
     App::new()
         .app_data(web::Data::new(repo))
+        .app_data(web::Data::new(book_repo))
         .wrap(cors)
         .configure(config)
 }
@@ -170,5 +235,43 @@ mod tests {
             .await;
 
         assert_eq!(res.status(), http::StatusCode::UNAUTHORIZED);
+    }
+
+    #[actix_web::test]
+    async fn test_should_list_books() {
+        let mut app = test::init_service(app()).await;
+
+        let res = test::TestRequest::get()
+            .uri("/books?text=ola")
+            .send_request(&mut app)
+            .await;
+
+        assert_eq!(res.status(), http::StatusCode::OK);
+
+        let result: Vec<BookResponse> = test::read_body_json(res).await;
+
+        assert_eq!(result.len(), 1);
+        let book = result.first().unwrap();
+
+        assert_eq!(book.title, "title 1");
+    }
+
+    #[actix_web::test]
+    async fn test_should_list_books_with_default_query() {
+        let mut app = test::init_service(app()).await;
+
+        let res = test::TestRequest::get()
+            .uri("/books")
+            .send_request(&mut app)
+            .await;
+
+        assert_eq!(res.status(), http::StatusCode::OK);
+
+        let result: Vec<BookResponse> = test::read_body_json(res).await;
+
+        assert_eq!(result.len(), 1);
+        let book = result.first().unwrap();
+
+        assert_eq!(book.title, "title 1");
     }
 }
