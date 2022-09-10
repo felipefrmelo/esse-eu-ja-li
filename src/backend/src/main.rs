@@ -9,5 +9,5 @@ pub use crate::domain::user;
 
 fn main() {
 
-    entrypoint::main().unwrap();
+    entrypoint::actix::main().unwrap();
 }
