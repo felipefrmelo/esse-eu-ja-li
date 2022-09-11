@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import { Home } from './home';
 
-describe('SignIn', () => {
-  it('renders correcty', () => {
+describe('Home', () => {
+  it('should render a input to search books', () => {
     render(<Home />);
-    const titleElement = screen.getByRole('heading', { name: /home/i });
-    expect(titleElement).toBeInTheDocument();
+    const search = screen.getByLabelText(/buscar livros/i);
+    expect(search).toBeInTheDocument();
   });
 });

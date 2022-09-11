@@ -2,6 +2,7 @@ import { useState, createContext, useContext } from 'react';
 
 type User = {
   access_token: string;
+  name: string;
 };
 
 export interface AuthProviderContext {
