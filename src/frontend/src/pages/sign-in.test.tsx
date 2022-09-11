@@ -53,7 +53,7 @@ describe('SignIn', () => {
     expect(fetchLoginApi).toBeCalledWith('test@test.com', '123456');
 
     await waitFor(() => {
-      expect(redirect).toBeCalled();
+      expect(redirect).toBeCalledWith('/');
     });
   });
 
