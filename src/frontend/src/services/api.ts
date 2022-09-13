@@ -1,3 +1,4 @@
+import { Book } from '../pages/home';
 import { AuthResponse } from '../providers/auth';
 
 class AuthError extends Error {
@@ -26,6 +27,18 @@ export const fetchLoginApi = async (email: string, password: string): Promise<Au
       data: await res.json(),
       status: res.status,
     };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchBooksApi = async (search: string): Promise<Book[]> => {
+  try {
+    const res = await fetch(`http://localhost:8080/books?text=${search}`);
+
+    if (!res.ok) throw new ServerError();
+
+    return await res.json();
   } catch (error) {
     throw error;
   }
