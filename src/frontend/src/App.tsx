@@ -1,6 +1,6 @@
 import { SignIn } from './pages/sign-in';
 import { AuthProvider } from './providers/auth';
-import { fetchLoginApi } from './services/api';
+import { fetchBooksApi, fetchLoginApi } from './services/api';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Home } from './pages/home';
 
@@ -13,7 +13,7 @@ function App() {
     <div className="App">
       <AuthProvider fetchLoginApi={fetchLoginApi}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home fetchBooks={fetchBooksApi} />} />
           <Route path="signin" element={<SignIn redirect={redirect} />} />
         </Routes>
       </AuthProvider>

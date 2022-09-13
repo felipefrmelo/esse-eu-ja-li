@@ -61,7 +61,7 @@ struct ImageLinks {
 
 async fn get_books_google(query: &str) -> Result<GoogleResponse, reqwest::Error> {
     let res: GoogleResponse = reqwest::get(format!(
-        "https://www.googleapis.com/books/v1/volumes?q={query}"
+        "https://www.googleapis.com/books/v1/volumes?q={query}&maxResults=16",
     ))
     .await?
     .json()
