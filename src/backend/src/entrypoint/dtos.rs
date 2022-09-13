@@ -16,6 +16,7 @@ pub struct TokenResponse {
 
 #[derive(Serialize, Deserialize)]
 pub struct BookResponse {
+    pub id: String,
     pub title: String,
     pub description: String,
     pub image: String,
@@ -24,6 +25,7 @@ pub struct BookResponse {
 impl BookResponse {
     pub fn from_domain(book: &Book) -> Self {
         BookResponse {
+            id: book.id.to_string(),
             title: book.title.to_string(),
             description: book.description.to_string(),
             image: book.image.to_string(),
