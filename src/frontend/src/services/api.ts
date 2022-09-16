@@ -15,7 +15,7 @@ class ServerError extends Error {
 
 export const fetchLoginApi = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    const res = await fetch('http://localhost:8080/auth', {
+    const res = await fetch('http://localhost/api/auth', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -34,7 +34,7 @@ export const fetchLoginApi = async (email: string, password: string): Promise<Au
 
 export const fetchBooksApi = async (search: string): Promise<Book[]> => {
   try {
-    const res = await fetch(`http://localhost:8080/books?text=${search}`);
+    const res = await fetch(`http://localhost/api/books?text=${search}`);
 
     if (!res.ok) throw new ServerError();
 
