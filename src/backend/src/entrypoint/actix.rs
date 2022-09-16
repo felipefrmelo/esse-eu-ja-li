@@ -34,7 +34,7 @@ fn app() -> App<
     )]);
 
     let cors = Cors::default()
-        .allowed_origin("http://localhost:3000")
+        .allowed_origin("http://localhost")
         .allowed_methods(vec!["GET", "POST"])
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600);
@@ -50,7 +50,7 @@ fn app() -> App<
 
 #[actix_web::main]
 pub async fn main() -> std::io::Result<()> {
-    HttpServer::new(app).bind(("127.0.0.1", 8080))?.run().await
+    HttpServer::new(app).bind(("0.0.0.0", 8080))?.run().await
 }
 
 #[cfg(test)]
