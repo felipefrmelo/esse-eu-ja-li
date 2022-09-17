@@ -45,5 +45,6 @@ jobs:
           script: |
             cd app/
             docker compose build
-            docker compose up --no-deps -d -e HOST=${{ secrets.HOST }} -e REACT_APP_HOST=${{ secrets.HOST }}
+            docker compose run -d -e HOST=${{ secrets.HOST }} -e REACT_APP_HOST=${{ secrets.HOST }} frontend
+            docker compose run -d -e HOST=${{ secrets.HOST }} -e REACT_APP_HOST=${{ secrets.HOST }} backend
            
