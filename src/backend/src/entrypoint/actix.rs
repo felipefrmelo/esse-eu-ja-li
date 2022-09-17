@@ -9,8 +9,11 @@ use actix_cors::Cors;
 use actix_web::{
     body::MessageBody,
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
+    http::header,
     web, App, Error, HttpServer,
 };
+
+use std::env;
 
 fn config(cfg: &mut web::ServiceConfig) {
     cfg.route("/auth", web::post().to(auth))
@@ -33,7 +36,10 @@ fn app() -> App<
     )]);
 
     let cors = Cors::default()
-        .allowed_origin("http://frontend")
+        .allowed_origin(format!(
+            "http://{}",
+            env::var("HOST").expect("FRONTEND_HOST not set")
+        ))
         .allowed_methods(vec!["GET", "POST"])
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600);

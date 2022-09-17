@@ -1,6 +1,8 @@
 import { Book } from '../pages/home';
 import { AuthResponse } from '../providers/auth';
 
+const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
+
 class AuthError extends Error {
   constructor() {
     super('Email e/ou senha inválidos');
@@ -15,7 +17,7 @@ class ServerError extends Error {
 
 export const fetchLoginApi = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    const res = await fetch('http://backend/api/auth', {
+    const res = await fetch(`${API_URL}/auth`, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -33,8 +35,8 @@ export const fetchLoginApi = async (email: string, password: string): Promise<Au
 };
 
 export const fetchBooksApi = async (search: string): Promise<Book[]> => {
-  try {
-    const res = await fetch(`http://backend/api/books?text=${search}`);
+    try {
+        const res = await fetch(`${API_URL}/books?text=${search}`);
 
     if (!res.ok) throw new ServerError();
 
