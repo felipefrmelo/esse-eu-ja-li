@@ -9,7 +9,6 @@ use actix_cors::Cors;
 use actix_web::{
     body::MessageBody,
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-    http::header,
     web, App, Error, HttpServer,
 };
 
