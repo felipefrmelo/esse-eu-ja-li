@@ -44,6 +44,6 @@ jobs:
           KEY: ${{ secrets.KEY }}
           script: |
             cd app/
-            docker-compose build
-            docker-compose up --no-deps -d
+            docker compose build
+            docker compose up --no-deps -d
            
