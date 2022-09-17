@@ -36,9 +36,9 @@ fn app() -> App<
     )]);
 
     let cors = Cors::default()
-        .allowed_origin(format!(
+        .allowed_origin(&format!(
             "http://{}",
-            env::var("HOST").expect("FRONTEND_HOST not set")
+            env::var("HOST").expect("HOST not set")
         ))
         .allowed_methods(vec!["GET", "POST"])
         .allowed_header(header::CONTENT_TYPE)
