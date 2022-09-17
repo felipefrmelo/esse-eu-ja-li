@@ -38,7 +38,7 @@ fn app() -> App<
     let cors = Cors::default()
         .allowed_origin(&format!(
             "http://{}",
-            env::var("HOST").expect("HOST not set")
+            env::var("REACT_APP_HOST").expect("REACT_APP_HOST not set")
         ))
         .allowed_methods(vec!["GET", "POST"])
         .allowed_header(header::CONTENT_TYPE)
