@@ -9,7 +9,6 @@ use actix_cors::Cors;
 use actix_web::{
     body::MessageBody,
     dev::{ServiceFactory, ServiceRequest, ServiceResponse},
-    http::header,
     web, App, Error, HttpServer,
 };
 
@@ -33,11 +32,7 @@ fn app() -> App<
         "test",
     )]);
 
-    let cors = Cors::default()
-        .allowed_origin("http://localhost")
-        .allowed_methods(vec!["GET", "POST"])
-        .allowed_header(header::CONTENT_TYPE)
-        .max_age(3600);
+    let cors = Cors::default().allow_any_origin().send_wildcard();
 
     let book_repo = GoogleBookRepository::new();
 
