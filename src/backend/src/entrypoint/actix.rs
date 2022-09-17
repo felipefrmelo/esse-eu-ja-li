@@ -34,7 +34,7 @@ fn app() -> App<
     )]);
 
     let cors = Cors::default()
-        .allowed_origin("http://localhost")
+        .allowed_origin("http://frontend")
         .allowed_methods(vec!["GET", "POST"])
         .allowed_header(header::CONTENT_TYPE)
         .max_age(3600);
