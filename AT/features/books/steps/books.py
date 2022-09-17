@@ -1,12 +1,20 @@
+# type: ignore
 from behave import *
+from selenium.webdriver.common.by import By
+import time
 
-@given(u'que eu esteja na pagina principal')
+@given('que eu esteja na pagina principal')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Given que eu esteja na pagina principal')
+    context.browser.get('http://localhost')
 
 
-@then(u'eu devo viasualizar uma lista de livros')
+@then('eu devo viasualizar uma lista de livros')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then eu devo viasualizar uma lista de livros')
+    time.sleep(1)
+    context.browser.find_element(By.ID, 'search').send_keys('mais lidos')
+
+    context.browser.find_element(By.XPATH, '//button[text()="Buscar"]').click()
+
+    time.sleep(5)
 
 
