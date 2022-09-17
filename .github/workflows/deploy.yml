@@ -44,7 +44,8 @@ jobs:
           KEY: ${{ secrets.KEY }}
           script: |
             cd app/
-            echo REACT_APP_HOST=${{ secrets.HOST }} >> .env.ci
+            echo REACT_APP_HOST=${{ secrets.HOST }} > .env.ci
+            echo REACT_APP_HOST=${{ secrets.HOST }} > src/frontend/.env
             docker compose build
             docker compose --env-file .env.ci up --no-deps -d
            
