@@ -63,10 +63,15 @@ mod tests {
     use super::*;
     use actix_web::{http, test};
 
-    use crate::entrypoint::dtos::{LoginRequest, TokenResponse};
+    use crate::entrypoint::dtos::{BookResponse, LoginRequest, TokenResponse};
+
+    fn set_env() {
+        env::set_var("REACT_APP_HOST", "localhost");
+    }
 
     #[actix_web::test]
     async fn test_should_login_user_correcty() {
+        set_env();
         let mut app = test::init_service(app()).await;
 
         let payload = LoginRequest {
@@ -88,6 +93,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_should_return_a_error_when_have_invalid_credentials_email() {
+        set_env();
         let mut app = test::init_service(app()).await;
 
         let payload = LoginRequest {
@@ -106,6 +112,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_should_return_a_error_when_have_invalid_credentials_pass() {
+        set_env();
         let mut app = test::init_service(app()).await;
 
         let payload = LoginRequest {
@@ -120,5 +127,22 @@ mod tests {
             .await;
 
         assert_eq!(res.status(), http::StatusCode::UNAUTHORIZED);
+    }
+
+    #[actix_web::test]
+    #[ignore]
+    async fn test_should_return_a_list_of_books() {
+        set_env();
+        let mut app = test::init_service(app()).await;
+
+        let res = test::TestRequest::get()
+            .uri("/books?text=harry")
+            .send_request(&mut app)
+            .await;
+
+        assert_eq!(res.status(), http::StatusCode::OK);
+
+        let result: Vec<BookResponse> = test::read_body_json(res).await;
+        assert_eq!(result.len(), 16);
     }
 }
