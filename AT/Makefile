@@ -6,6 +6,8 @@ test-login:
 test-books:
 	behave features/books
 
+all: test-login test-books
+
 
 
 
