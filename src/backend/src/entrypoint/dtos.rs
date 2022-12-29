@@ -20,6 +20,11 @@ pub struct BookResponse {
     pub title: String,
     pub description: String,
     pub image: String,
+    pub publisher: String,
+    pub published_date: String,
+    pub pages: i32,
+    pub categories: Vec<String>,
+    pub authors: Vec<String>,
 }
 
 impl BookResponse {
@@ -29,6 +34,11 @@ impl BookResponse {
             title: book.title.to_string(),
             description: book.description.to_string(),
             image: book.image.to_string(),
+            publisher: book.publisher.to_string(),
+            published_date: book.published_date.to_string(),
+            pages: book.pages,
+            categories: book.categories.to_vec(),
+            authors: book.authors.to_vec(),
         }
     }
 }

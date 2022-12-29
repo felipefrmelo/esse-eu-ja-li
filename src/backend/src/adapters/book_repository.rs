@@ -37,6 +37,23 @@ impl GoogleBook {
                 })
                 .thumbnail
                 .clone(),
+            self.volume_info
+                .publisher
+                .as_ref()
+                .unwrap_or(&"".to_string())
+                .clone(),
+            self.volume_info
+                .published_date
+                .as_ref()
+                .unwrap_or(&"".to_string())
+                .clone(),
+            self.volume_info.page_count.unwrap_or(0),
+            self.volume_info
+                .categories
+                .as_ref()
+                .unwrap_or(&vec![])
+                .clone(),
+            self.volume_info.authors.as_ref().unwrap_or(&vec![]).clone(),
         )
     }
 }
@@ -47,6 +64,13 @@ struct VolumeInfo {
     description: Option<String>,
     #[serde(rename = "imageLinks")]
     image_links: Option<ImageLinks>,
+    publisher: Option<String>,
+    #[serde(rename = "publishedDate")]
+    published_date: Option<String>,
+    #[serde(rename = "pageCount")]
+    page_count: Option<i32>,
+    categories: Option<Vec<String>>,
+    authors: Option<Vec<String>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
