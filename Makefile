@@ -8,4 +8,13 @@ start:
 stop:
 	docker-compose down
 
+restart:
+	docker-compose restart
+
+rebuild-front: 
+	docker-compose build  frontend
+	docker-compose up -d --force-recreate frontend
+
+
+
 

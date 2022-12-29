@@ -1,4 +1,4 @@
-import { Book } from '../pages/home';
+import { Book } from '../domain/book';
 import { AuthResponse } from '../providers/auth';
 
 const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
