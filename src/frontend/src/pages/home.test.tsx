@@ -1,23 +1,27 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { createRandomBook } from '../domain/book.test';
 import { Home } from './home';
 
-describe('Home', () => {
-  it('should fetch books from api', async () => {
-    const books = [
-      {
+
+const makeBooks = () => [
+      createRandomBook({
         id: '1',
         title: 'Aprendendo React',
         description: 'Livro sobre React',
         image:
           'https://images-na.ssl-images-amazon.com/images/I/51Zyv9Z8QWL._SX379_BO1,204,203,200_.jpg',
-      },
-      {
+      }),
+      createRandomBook({
         id: '2',
         title: 'Aprendendo React Native',
         description: 'Livro sobre React Native',
         image: 'https://m.media-amazon.com/images/I/51Zyv9Z8QWL.jpg',
-      },
-    ];
+      }),
+    ]
+
+describe('Home', () => {
+  it('should fetch books from api', async () => {
+    const books = makeBooks();
 
     const fetchBooks = jest.fn().mockResolvedValue(books);
 
@@ -33,21 +37,7 @@ describe('Home', () => {
   });
 
   it('should fetch books from api with search', async () => {
-    const books = [
-      {
-        id: '1',
-        title: 'Aprendendo React',
-        description: 'Livro sobre React',
-        image:
-          'https://images-na.ssl-images-amazon.com/images/I/51Zyv9Z8QWL._SX379_BO1,204,203,200_.jpg',
-      },
-      {
-        id: '2',
-        title: 'Aprendendo React Native',
-        description: 'Livro sobre React Native',
-        image: 'https://m.media-amazon.com/images/I/51Zyv9Z8QWL.jpg',
-      },
-    ];
+    const books = makeBooks();
 
     const fetchBooks = jest.fn().mockResolvedValue(books);
 
