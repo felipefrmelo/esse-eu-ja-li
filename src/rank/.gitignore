@@ -1,0 +1,27 @@
+## write a gitingore file for python
+
+/venv
+
+*.pyc
+
+*.pyo
+
+*.pyd
+
+__pycache__
+
+*.so
+
+*.egg-info
+
+*.egg
+
+*.egg-link
+
+*.egg-info
+
+*.egg-info
+
+
+
+
