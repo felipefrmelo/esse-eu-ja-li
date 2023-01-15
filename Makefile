@@ -16,5 +16,15 @@ rebuild-front:
 	docker-compose up -d --force-recreate frontend
 
 
+rebuild-rank: 
+	docker-compose build  rank
+	docker-compose up -d --force-recreate rank
+
+
+rebuild-nginx:
+	docker-compose build  nginx
+	docker-compose up -d --force-recreate nginx
+
+
 
 

@@ -25,5 +25,11 @@ services:
     environment:
       - REACT_APP_HOST
     
+  rank:
+    build:
+      dockerfile: Dockerfile
+      context: ./src/rank
+    environment:
+      - REACT_APP_HOST
 
 
