@@ -13,6 +13,7 @@ restart:
 
 rebuild-front: 
 	docker-compose build  frontend
+	docker-compose down frontend
 	docker-compose up -d --force-recreate frontend
 
 
