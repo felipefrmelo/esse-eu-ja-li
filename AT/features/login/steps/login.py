@@ -4,10 +4,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 
+
 @given('Um cliente na pagina de login')
-def step_impl(context):  
+def step_impl(context):
     context.browser.get('http://localhost/signin')
     time.sleep(1)
+
 
 @when('o cliente faz o login com "{email}" e "{senha}"')
 def step_impl(context, email, senha):
@@ -21,6 +23,4 @@ def step_impl(context, email, senha):
 
 @then('ele deve ser redireciona para a listagem de livros')
 def step_impl(context):
-    assert context.browser.current_url == 'http://localhost/' , f'URL atual: {context.browser.current_url}'
-
-
+    assert context.browser.current_url == 'http://localhost/', f'URL atual: {context.browser.current_url}'
