@@ -2,7 +2,7 @@ import { Book } from '../domain/book';
 import { AuthResponse } from '../providers/auth';
 
 const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
-const RANK_URL = `${API_URL}/rank`;
+const RANK_URL = `http://${process.env.REACT_APP_HOST}/rank`;
 
 class AuthError extends Error {
   constructor() {
