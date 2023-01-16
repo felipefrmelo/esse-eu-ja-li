@@ -99,6 +99,6 @@ describe('BookCard', () => {
     openModal();
 
     expect(getUserBookById).toHaveBeenCalledWith(book.id);
-    expect(await screen.findByText('Já li')).toBeInTheDocument();
+    expect(await screen.findAllByText('Já li')).toHaveLength(2);
   });
 });
