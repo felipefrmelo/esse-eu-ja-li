@@ -1,13 +1,15 @@
 from fastapi.testclient import TestClient
 import random
 
-from .main import app
+from .main import app, get_current_user
 
 client = TestClient(app)
 
 
 def mark_book(book, user_id=1):
-    response = client.post(f"/books/user/{user_id}/mark/", json=book)
+
+    app.dependency_overrides[get_current_user] = lambda: user_id
+    response = client.post(f"/books/user/mark", json=book)
     return response
 
 
@@ -33,7 +35,7 @@ def test_mark_and_get_book_by_user():
     user_id = random.randint(2, 10000)
     response = mark_book(request, user_id=user_id)
 
-    response = client.get(f"/books/user/{user_id}")
+    response = client.get(f"/books/user")
 
     assert response.status_code == 200
     assert response.json() == [request]
@@ -48,7 +50,7 @@ def test_mark_and_get_book_by_user_and_id():
     response = mark_book(book1, user_id=user_id)
     response = mark_book(book2, user_id=user_id)
 
-    response = client.get(f"/books/user/{user_id}?book_id={book1['id']}")
+    response = client.get(f"/books/user?book_id={book1['id']}")
 
     assert response.status_code == 200
     assert response.json() == [book1]
@@ -61,7 +63,7 @@ def test_should_not_mark_book_duplicate():
     response = mark_book(request, user_id=user_id)
     response = mark_book(request, user_id=user_id)
 
-    response = client.get(f"/books/user/{user_id}")
+    response = client.get(f"/books/user")
 
     assert response.status_code == 200
 

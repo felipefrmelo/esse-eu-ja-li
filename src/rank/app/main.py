@@ -1,6 +1,31 @@
-from fastapi import FastAPI, Query, Request
+from fastapi import Depends, FastAPI, HTTPException, Query, Request, status
+from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel, Field
+from jose import JWTError, jwt
 import uvicorn
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+
+SECRET_KEY = "secret"
+ALGORITHM = "HS256"
+
+
+def decode_token(token):
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+    except JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    user = decode_token(token)
+    return user.get("sub")
 
 
 class MarkBookRequest(BaseModel):
@@ -21,12 +46,12 @@ users = {}
 
 
 @app.get("/app")
-def read_main(request: Request):
-    return {"message": "Hello World", "root_path": request.scope.get("root_path")}
+def read_main(request: Request, token: str = Depends(get_current_user)):
+    return {"message": "Hello World", "root_path": request.scope.get("root_path"), "token": token}
 
 
-@app.post("/books/user/{user_id}/mark/")
-async def mark_book(request: MarkBookRequest, user_id: int):
+@app.post("/books/user/mark")
+async def mark_book(request: MarkBookRequest, user_id: str = Depends(get_current_user)):
 
     user = users.get(user_id, [])
 
@@ -37,8 +62,8 @@ async def mark_book(request: MarkBookRequest, user_id: int):
     return {"message": "Book marked"}
 
 
-@app.get("/books/user/{user_id}")
-async def books(user_id: int, book_id: int = Query(None)):
+@app.get("/books/user")
+async def books(book_id: int = Query(None), user_id: str = Depends(get_current_user)):
     user = users.get(user_id, [])
     if book_id:
         return [book for book in user if book["id"] == book_id]
