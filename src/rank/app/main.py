@@ -29,7 +29,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 
 
 class MarkBookRequest(BaseModel):
-    id: int = Field(gt=0, example=1)
+    id: str = Field(..., example="bfe4a8fd")
     title: str = Field(min_length=1, example="Book 1")
     categories: list[str] = Field(..., example=["fiction", "science fiction"])
     pages: int = Field(gt=0, example=100)
@@ -63,7 +63,7 @@ async def mark_book(request: MarkBookRequest, user_id: str = Depends(get_current
 
 
 @app.get("/books/user")
-async def books(book_id: int = Query(None), user_id: str = Depends(get_current_user)):
+async def books(book_id: str = Query(None), user_id: str = Depends(get_current_user)):
     user = users.get(user_id, [])
     if book_id:
         return [book for book in user if book["id"] == book_id]
