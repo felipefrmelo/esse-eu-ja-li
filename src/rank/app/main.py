@@ -32,7 +32,7 @@ class MarkBookRequest(BaseModel):
     id: str = Field(..., example="bfe4a8fd")
     title: str = Field(min_length=1, example="Book 1")
     categories: list[str] = Field(..., example=["fiction", "science fiction"])
-    pages: int = Field(gt=0, example=100)
+    pages: int = Field(gte=0, example=100)
 
 
 app = FastAPI(
