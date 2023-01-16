@@ -10,7 +10,7 @@ import { AppBar } from '../components/app-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { BookCard } from '../components/book-card';
 import { Book } from '../domain/book';
-
+import { getUserBookByIdApi, handleMarkAsReadApi } from '../services/api';
 
 interface HomeProps {
   fetchBooks: (search: string) => Promise<Book[]>;
@@ -68,7 +68,12 @@ export const Home = ({ fetchBooks }: HomeProps) => {
         <Container sx={{ py: 8 }} maxWidth="md">
           <Grid container spacing={4}>
             {books.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard
+                key={book.id}
+                book={book}
+                handleMarkAsRead={handleMarkAsReadApi}
+                getUserBookById={getUserBookByIdApi}
+              />
             ))}
           </Grid>
         </Container>
@@ -82,4 +87,3 @@ export const Home = ({ fetchBooks }: HomeProps) => {
     </Box>
   );
 };
-

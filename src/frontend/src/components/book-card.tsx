@@ -14,10 +14,49 @@ import {
   Chip,
   Stack,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Book } from '../domain/book';
 
-const DetailsModal = ({ book }: { book: Book }) => {
+export interface BookCardProps {
+  book: Book;
+  handleMarkAsRead: (book: Book) => Promise<void>;
+  getUserBookById: (bookId: string) => Promise<Book>;
+}
+
+const useHandleMarkAsRead = ({ book, handleMarkAsRead, getUserBookById }: BookCardProps) => {
+  const [isRead, setIsRead] = useState(false);
+
+  useEffect(() => {
+    const getUserBook = async () => {
+      try {
+        await getUserBookById(book.id);
+        setIsRead(true);
+      } catch (e) {
+        setIsRead(false);
+      }
+    };
+    getUserBook();
+  }, [book, getUserBookById]);
+
+  const handleMarkAsReadClick = async () => {
+    try {
+      await handleMarkAsRead(book);
+      setIsRead(true);
+    } catch (error) {
+      setIsRead(false);
+    }
+  };
+
+  return { isRead, handleMarkAsReadClick };
+};
+
+interface BookDetailsProps {
+  book: Book;
+  isRead: boolean;
+  handleMarkAsReadClick: () => Promise<void>;
+}
+
+const DetailsModal = ({ book, isRead, handleMarkAsReadClick }: BookDetailsProps) => {
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
@@ -75,15 +114,21 @@ const DetailsModal = ({ book }: { book: Book }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Fechar</Button>
+          <Button onClick={handleMarkAsReadClick}>{isRead ? 'Já li' : 'Marcar como lido'}</Button>
         </DialogActions>
       </Dialog>
     </>
   );
 };
 
-export const BookCard = ({ book }: { book: Book }) => {
+export const BookCard = ({ book, handleMarkAsRead, getUserBookById }: BookCardProps) => {
   const maxLengthTitle = 50;
 
+  const { isRead, handleMarkAsReadClick } = useHandleMarkAsRead({
+    book,
+    handleMarkAsRead,
+    getUserBookById,
+  });
   return (
     <Grid item key={book.id} xs={12} sm={6} md={3}>
       <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -97,8 +142,7 @@ export const BookCard = ({ book }: { book: Book }) => {
           <Typography noWrap>{book.description}</Typography>
         </CardContent>
         <CardActions>
-          <DetailsModal book={book} />
-          <Button size="small">Edit</Button>
+          <DetailsModal book={book} isRead={isRead} handleMarkAsReadClick={handleMarkAsReadClick} />
         </CardActions>
       </Card>
     </Grid>

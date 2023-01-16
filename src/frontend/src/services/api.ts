@@ -2,6 +2,7 @@ import { Book } from '../domain/book';
 import { AuthResponse } from '../providers/auth';
 
 const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
+const RANK_URL = `${API_URL}/rank`;
 
 class AuthError extends Error {
   constructor() {
@@ -15,18 +16,34 @@ class ServerError extends Error {
   }
 }
 
+let token: string | null = null;
+
+const fetchApi = async (url: string, options: RequestInit = {}): Promise<Response> => {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
+  return response;
+};
+
 export const fetchLoginApi = async (email: string, password: string): Promise<AuthResponse> => {
   try {
-    const res = await fetch(`${API_URL}/auth`, {
+    const res = await fetchApi(`${API_URL}/auth`, {
       method: 'POST',
-      headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
 
     if (!res.ok) throw res.status >= 500 ? new ServerError() : new AuthError();
 
+    const data = await res.json();
+    token = data.access_token;
+
     return {
-      data: await res.json(),
+      data,
       status: res.status,
     };
   } catch (error) {
@@ -35,12 +52,41 @@ export const fetchLoginApi = async (email: string, password: string): Promise<Au
 };
 
 export const fetchBooksApi = async (search: string): Promise<Book[]> => {
-    try {
-        const res = await fetch(`${API_URL}/books?text=${search}`);
+  try {
+    const res = await fetchApi(`${API_URL}/books?text=${search}`);
 
     if (!res.ok) throw new ServerError();
 
     return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserBookByIdApi = async (bookId: string): Promise<Book> => {
+  try {
+    const res = await fetchApi(`${RANK_URL}/books/user?book_id=${bookId}`);
+
+    if (!res.ok) throw new ServerError();
+
+    const [book] = await res.json();
+
+    if (!book) throw new Error('Book not found');
+
+    return book;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const handleMarkAsReadApi = async (book: Book): Promise<void> => {
+  try {
+    const res = await fetchApi(`${RANK_URL}/books/user`, {
+      method: 'POST',
+      body: JSON.stringify(book),
+    });
+
+    if (!res.ok) throw new ServerError();
   } catch (error) {
     throw error;
   }
