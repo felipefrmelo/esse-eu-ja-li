@@ -141,7 +141,13 @@ export const BookCard = ({ book, handleMarkAsRead, getUserBookById }: BookCardPr
           </Typography>
           <Typography noWrap>{book.description}</Typography>
         </CardContent>
-        <CardActions>
+        <CardActions
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
+          {isRead ? <Chip label="Já li" color="success" variant="outlined" /> : <span />}
           <DetailsModal book={book} isRead={isRead} handleMarkAsReadClick={handleMarkAsReadClick} />
         </CardActions>
       </Card>
