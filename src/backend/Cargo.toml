@@ -15,6 +15,7 @@ derive_more = "^0.99"
 actix-cors = "0.6.2"
 reqwest = { version = "0.11", features = ["json"] }
 async-trait = "0.1.57"
+chrono = "0.2.25"
 
 [dependencies.uuid]
 version = "1.1.2"
