@@ -1,4 +1,4 @@
-import { Book } from '../domain/book';
+import { Book, markBook } from '../domain/book';
 import { AuthResponse } from '../providers/auth';
 
 const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
@@ -81,9 +81,9 @@ export const getUserBookByIdApi = async (bookId: string): Promise<Book> => {
 
 export const handleMarkAsReadApi = async (book: Book): Promise<void> => {
   try {
-    const res = await fetchApi(`${RANK_URL}/books/user`, {
+    const res = await fetchApi(`${RANK_URL}/books/user/mark`, {
       method: 'POST',
-      body: JSON.stringify(book),
+      body: JSON.stringify(markBook(book)),
     });
 
     if (!res.ok) throw new ServerError();
