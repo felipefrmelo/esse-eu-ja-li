@@ -8,11 +8,16 @@ from test.helpers import makeBook
 client = TestClient(app)
 
 
-def mark_book(book, user_id=1):
+def mark_book(book, user_id='1'):
 
     app.dependency_overrides[get_current_user] = lambda: user_id
     response = client.post(f"/books/user/mark", json=book)
     return response
+
+
+def make_user_id():
+    user_id = random.randint(2, 10000)
+    return str(user_id)
 
 
 def test_mark_book():
@@ -26,7 +31,7 @@ def test_mark_book():
 def test_mark_and_get_book_by_user():
     request = makeBook()
 
-    user_id = random.randint(2, 10000)
+    user_id = make_user_id()
     response = mark_book(request, user_id=user_id)
 
     response = client.get(f"/books/user")
@@ -39,7 +44,7 @@ def test_mark_and_get_book_by_user_and_id():
     book1 = makeBook()
     book2 = makeBook()
 
-    user_id = random.randint(2, 10000)
+    user_id = make_user_id()
 
     response = mark_book(book1, user_id=user_id)
     response = mark_book(book2, user_id=user_id)
@@ -53,7 +58,7 @@ def test_mark_and_get_book_by_user_and_id():
 def test_should_not_mark_book_duplicate():
     request = makeBook()
 
-    user_id = random.randint(2, 10000)
+    user_id = make_user_id()
     response = mark_book(request, user_id=user_id)
     response = mark_book(request, user_id=user_id)
 
@@ -62,3 +67,32 @@ def test_should_not_mark_book_duplicate():
     assert response.status_code == 200
 
     assert len(response.json()) == 1
+
+
+def test_should_get_user_points():
+    request = makeBook()
+    request["pages"] = 72
+
+    user_id = make_user_id()
+    mark_book(request, user_id=user_id)
+
+    response = client.get(f"/users/{user_id}/points")
+
+    assert response.status_code == 200
+    assert response.json() == 1
+
+
+def test_should_get_user_trophies():
+    requests = [makeBook() for _ in range(5)]
+    requests = [{**request, "categories": ['fiction']} for request in requests]
+
+    user_id = make_user_id()
+    for request in requests:
+        mark_book(request, user_id=user_id)
+
+    response = client.get(f"/users/{user_id}/trophies")
+
+    assert response.status_code == 200
+    assert response.json() == [{
+        'category': 'fiction',
+    }]

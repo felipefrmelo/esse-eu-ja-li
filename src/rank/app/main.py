@@ -31,11 +31,11 @@ class MarkBookRequest(BaseModel):
         )
 
 
-repo = BookRepositoryInMemmory()
+db = BookRepositoryInMemmory()
 
 
 def get_repo():
-    return repo
+    return db
 
 
 @app.post("/books/user/mark")
@@ -53,6 +53,15 @@ async def books(book_id: str = Query(None), user_id: str = Depends(get_current_u
 
     return handlers.get_book(user_id, book_id, repo)
 
+
+@app.get("/users/{user_id}/points")
+async def user_points(user_id: str, repo: BookRepositoryInMemmory = Depends(get_repo)):
+    return handlers.get_user_points(user_id, repo)
+
+
+@app.get("/users/{user_id}/trophies")
+async def user_trophies(user_id: str, repo: BookRepositoryInMemmory = Depends(get_repo)):
+    return handlers.get_user_trophies(user_id, repo)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=5000,
