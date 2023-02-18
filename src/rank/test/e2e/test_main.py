@@ -1,7 +1,9 @@
+
 from fastapi.testclient import TestClient
 import random
 
-from .main import app, get_current_user
+from app.main import app, get_current_user
+from test.helpers import makeBook
 
 client = TestClient(app)
 
@@ -11,14 +13,6 @@ def mark_book(book, user_id=1):
     app.dependency_overrides[get_current_user] = lambda: user_id
     response = client.post(f"/books/user/mark", json=book)
     return response
-
-
-def makeBook(): return {
-    "id": str(random.randint(1, 10000)) + '_s',
-    "title": f'Book {random.randint(1, 100)}',
-    "categories": ["fiction", "science fiction"],
-    "pages": random.randint(1, 1000),
-}
 
 
 def test_mark_book():
