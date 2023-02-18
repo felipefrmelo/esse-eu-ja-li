@@ -5,6 +5,7 @@ import uvicorn
 from . import handlers
 from .auth import get_current_user
 from .models import Book
+from .adapters import BookRepositoryInMemmory
 
 
 app = FastAPI(
@@ -28,24 +29,6 @@ class MarkBookRequest(BaseModel):
             categories=self.categories,
             pages=self.pages,
         )
-
-
-users = {}
-
-
-class BookRepositoryInMemmory(handlers.BookRepository):
-    def get_book_by_user(self, user_id) -> list[Book]:
-        return users.get(user_id, [])
-
-    def get_book_by_user_and_id(self, user_id, book_id) -> list[Book]:
-        user = self.get_book_by_user(user_id)
-        return [book for book in user if book.id == book_id]
-
-    def mark_book(self, user_id, book) -> None:
-        user = self.get_book_by_user(user_id)
-        if book not in user:
-            user.append(book)
-        users[user_id] = user
 
 
 def get_repo():
