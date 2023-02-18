@@ -7,3 +7,8 @@ class Book:
     title: str
     categories: list[str]
     pages: int
+
+
+@dataclass
+class Trophy:
+    category: str

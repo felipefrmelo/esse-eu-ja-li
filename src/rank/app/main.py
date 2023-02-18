@@ -31,8 +31,11 @@ class MarkBookRequest(BaseModel):
         )
 
 
+repo = BookRepositoryInMemmory()
+
+
 def get_repo():
-    return BookRepositoryInMemmory()
+    return repo
 
 
 @app.post("/books/user/mark")
