@@ -4,7 +4,8 @@ from .models import Book
 
 class BookRepositoryInMemmory(handlers.BookRepository):
 
-    users = {}
+    def __init__(self):
+        self.users = {}
 
     def get_book_by_user(self, user_id) -> list[Book]:
         return self.users.get(user_id, [])
