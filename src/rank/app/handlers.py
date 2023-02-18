@@ -3,6 +3,9 @@ from .models import Book, Trophy
 from functools import reduce
 
 
+BOOKS_PER_TROPHY = 5
+
+
 class BookRepository(ABC):
 
     @abstractmethod
@@ -35,10 +38,8 @@ def get_points(book: Book) -> int:
 
 def get_user_points(user_id: str, repo: BookRepository) -> int:
     books = get_book(user_id, None, repo)
+    print(user_id)
     return sum([get_points(book) for book in books])
-
-
-BOOKS_PER_TROPHY = 5
 
 
 def get_user_trophies(user_id: str, repo: BookRepository) -> list[Trophy]:
