@@ -1,6 +1,6 @@
 import { useState, createContext, useContext } from 'react';
 
-type User = {
+export type User = {
   access_token: string;
   name: string;
 };
