@@ -89,6 +89,7 @@ mod tests {
 
         let result: TokenResponse = test::read_body_json(res).await;
         assert!(!result.access_token.is_empty());
+        assert!(!result.name.is_empty());
     }
 
     #[actix_web::test]

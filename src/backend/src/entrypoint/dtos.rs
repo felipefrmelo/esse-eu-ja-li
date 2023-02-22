@@ -12,6 +12,7 @@ pub struct LoginRequest {
 #[derive(Serialize, Deserialize)]
 pub struct TokenResponse {
     pub access_token: String,
+    pub name: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -52,6 +53,7 @@ impl TokenResponse {
     pub fn from_domain(token: Token) -> Self {
         TokenResponse {
             access_token: token.access_token,
+            name: token.name,
         }
     }
 }

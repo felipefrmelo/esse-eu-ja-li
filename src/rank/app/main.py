@@ -54,13 +54,13 @@ async def books(book_id: str = Query(None), user_id: str = Depends(get_current_u
     return handlers.get_book(user_id, book_id, repo)
 
 
-@app.get("/users/{user_id}/points")
-async def user_points(user_id: str, repo: BookRepositoryInMemmory = Depends(get_repo)):
+@app.get("/users/points")
+async def user_points(user_id: str = Depends(get_current_user), repo: BookRepositoryInMemmory = Depends(get_repo)):
     return handlers.get_user_points(user_id, repo)
 
 
-@app.get("/users/{user_id}/trophies")
-async def user_trophies(user_id: str, repo: BookRepositoryInMemmory = Depends(get_repo)):
+@app.get("/users/trophies")
+async def user_trophies(user_id: str = Depends(get_current_user), repo: BookRepositoryInMemmory = Depends(get_repo)):
     return handlers.get_user_trophies(user_id, repo)
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { RequireAuth } from './require-auth';
+import { render, screen, waitFor } from '@testing-library/react';
+import { RequireAuth, RequireUser } from './require-auth';
 
-import { useAuthContext, User } from '../providers/auth';
+import { useAuthContext } from '../providers/auth';
 
 jest.mock('../providers/auth');
 
@@ -22,7 +22,7 @@ describe('RequireAuth', () => {
     componentProps?: any;
   };
 
-  const renderRequireAuth = <T,>({
+  const renderRequireAuth = ({
     redirect = jest.fn(),
     component = () => <div>Logged</div>,
     componentProps,
@@ -45,7 +45,7 @@ describe('RequireAuth', () => {
     expect(redirect).not.toHaveBeenCalled();
   });
 
-  it('should redirect if user is not logged', () => {
+  it('should redirect if user is not logged', async () => {
     mockUserContext({
       user: null,
     });
@@ -54,7 +54,9 @@ describe('RequireAuth', () => {
 
     renderRequireAuth({ redirect });
 
-    expect(redirect).toHaveBeenCalledWith('/signin');
+    await waitFor(() => {
+      expect(redirect).toHaveBeenCalledWith('/signin');
+    });
   });
 
   it('should component receive user as props', () => {
@@ -66,7 +68,7 @@ describe('RequireAuth', () => {
 
     const redirect = jest.fn();
     type ComponentProps = {
-      user: User;
+      user: RequireUser;
       fooProp: string;
     };
 

@@ -76,7 +76,7 @@ def test_should_get_user_points():
     user_id = make_user_id()
     mark_book(request, user_id=user_id)
 
-    response = client.get(f"/users/{user_id}/points")
+    response = client.get(f"/users/points")
 
     assert response.status_code == 200
     assert response.json() == 1
@@ -90,7 +90,7 @@ def test_should_get_user_trophies():
     for request in requests:
         mark_book(request, user_id=user_id)
 
-    response = client.get(f"/users/{user_id}/trophies")
+    response = client.get(f"/users/trophies")
 
     assert response.status_code == 200
     assert response.json() == [{

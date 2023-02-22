@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { useAuthContext, User } from '../providers/auth';
 
+export type RequireUser = Omit<User, 'access_token'>;
+
 interface K {
-  user: User;
+  user: RequireUser;
 }
 
 interface RequireAuthProps<T> {
@@ -17,10 +20,17 @@ export const RequireAuth = <T,>({
 }: RequireAuthProps<T>) => {
   const { user } = useAuthContext();
 
-  if (user) {
-    return <Component  {...componentProps} user={user} />;
-  }
+  useEffect(() => {
+    if (!user) {
+      setTimeout(() => {
+        redirect('/signin');
+      }, 0);
+      return;
+    }
+  }, [redirect, user]);
 
-  redirect('/signin');
+  if (user) {
+    return <Component {...componentProps} user={user} />;
+  }
   return null;
 };

@@ -20,6 +20,7 @@ pub fn handle(
 
     Ok(Token {
         access_token: generate_token(&user.id),
+        name: user.name.to_string(),
     })
 }
 
@@ -66,6 +67,7 @@ mod tests_services {
     fn should_create_a_token_when_give_a_valid_credentials() {
         let token_expected = Token {
             access_token: generate_token(""),
+            name: "test".to_string(),
         };
 
         let (email, password, user) = make_fake_user();
