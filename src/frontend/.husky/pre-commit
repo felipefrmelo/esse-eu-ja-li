@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+cd src/frontend
+npx eslint src/ --max-warnings=0
+npm test

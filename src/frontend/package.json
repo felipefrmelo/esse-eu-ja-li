@@ -25,8 +25,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test  --coverage .",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test  --coverage . --watchAll=false",
+    "eject": "react-scripts eject",
+    "prepare": "cd ../../ && husky install src/frontend/.husky"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +48,7 @@
     ]
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.6.0"
+    "@faker-js/faker": "^7.6.0",
+    "husky": "^8.0.3"
   }
 }
