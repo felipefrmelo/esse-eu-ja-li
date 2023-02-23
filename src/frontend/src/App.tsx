@@ -5,6 +5,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Home } from './pages/home';
 import { RequireAuth } from './components/require-auth';
 import { Profile } from './pages/profile';
+import { Layout } from './components/layout';
 
 function App() {
   const navigate = useNavigate();
@@ -15,18 +16,20 @@ function App() {
     <div className="App">
       <AuthProvider fetchLoginApi={fetchLoginApi}>
         <Routes>
-          <Route path="/" element={<Home fetchBooks={fetchBooksApi} />} />
           <Route path="signin" element={<SignIn redirect={redirect} />} />
-          <Route
-            path="profile"
-            element={
-              <RequireAuth
-                component={Profile}
-                redirect={redirect}
-                componentProps={{ getUserStats }}
-              />
-            }
-          />
+          <Route element={<Layout redirect={redirect}/>}>
+            <Route path="/" element={<Home fetchBooks={fetchBooksApi} />} />
+            <Route
+              path="profile"
+              element={
+                <RequireAuth
+                  component={Profile}
+                  redirect={redirect}
+                  componentProps={{ getUserStats }}
+                />
+              }
+            />
+          </Route>
         </Routes>
       </AuthProvider>
     </div>
