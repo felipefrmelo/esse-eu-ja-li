@@ -38,7 +38,6 @@ def get_points(book: Book) -> int:
 
 def get_user_points(user_id: str, repo: BookRepository) -> int:
     books = get_book(user_id, None, repo)
-    print(user_id)
     return sum([get_points(book) for book in books])
 
 
