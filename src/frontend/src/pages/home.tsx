@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Copyright } from '../components/copyright';
 import TextField from '@mui/material/TextField';
-import { AppBar } from '../components/app-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { BookCard } from '../components/book-card';
 import { Book } from '../domain/book';
@@ -38,8 +37,7 @@ export const Home = ({ fetchBooks }: HomeProps) => {
   };
 
   return (
-    <Box minHeight={'100vh'} display={'flex'} flexDirection={'column'}>
-      <AppBar />
+    <>
       <Box component="main" sx={{ flexGrow: 1 }}>
         <Box
           sx={{
@@ -84,6 +82,6 @@ export const Home = ({ fetchBooks }: HomeProps) => {
         </Typography>
         <Copyright />
       </Box>
-    </Box>
+    </>
   );
 };

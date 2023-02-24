@@ -1,4 +1,5 @@
 import { Book, markBook } from '../domain/book';
+import { Stats } from '../pages/profile';
 import { AuthResponse } from '../providers/auth';
 
 const API_URL = `http://${process.env.REACT_APP_HOST}/api`;
@@ -87,6 +88,25 @@ export const handleMarkAsReadApi = async (book: Book): Promise<void> => {
     });
 
     if (!res.ok) throw new ServerError();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserStats = async (): Promise<Stats> => {
+  try {
+    const [points, trophies] = await Promise.all([
+      fetchApi(`${RANK_URL}/users/points`),
+      fetchApi(`${RANK_URL}/users/trophies`),
+    ]);
+
+    if (!points.ok || !trophies.ok) throw new ServerError();
+
+    const [pointsData, trophiesData] = await Promise.all([points.json(), trophies.json()]);
+    return {
+      points: pointsData,
+      trophies: trophiesData,
+    };
   } catch (error) {
     throw error;
   }

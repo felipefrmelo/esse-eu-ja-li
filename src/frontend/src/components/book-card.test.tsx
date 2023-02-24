@@ -52,7 +52,7 @@ describe('BookCard', () => {
     });
   });
 
-  it('should show a button "Já li" when open modal', async () => {
+  it('should show a button "Marcar como lido" when open modal', async () => {
     renderBookCard();
 
     expect(screen.queryByText('Marcar como lido')).not.toBeInTheDocument();
