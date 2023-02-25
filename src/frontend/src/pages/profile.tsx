@@ -27,13 +27,13 @@ const ShowStats = ({ stats }: { stats?: Stats }) => {
           <Typography variant="h4" align="center">
             {stats.points}
           </Typography>
-          <Typography variant="subtitle1">Points</Typography>
+          <Typography variant="subtitle1">Pontos</Typography>
         </Grid>
         <Grid item>
           <Typography variant="h4" align="center">
             {stats.trophies.length}
           </Typography>
-          <Typography variant="subtitle1">Trophies</Typography>
+          <Typography variant="subtitle1">Troféus</Typography>
         </Grid>
       </Grid>
 

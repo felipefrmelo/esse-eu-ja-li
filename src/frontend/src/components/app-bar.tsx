@@ -59,7 +59,7 @@ export const AppBar = ({ redirect }: AppBarProps) => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <MenuItem onClick={() => handleClose('/profile')}>Profile</MenuItem>
+            <MenuItem onClick={() => handleClose('/profile')}>Meus pontos</MenuItem>
             {!user && <MenuItem onClick={() => handleClose('/signin')}>Login</MenuItem>}
           </Menu>
         </Box>
