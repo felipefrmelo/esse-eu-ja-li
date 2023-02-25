@@ -49,7 +49,7 @@ describe('AppBar', () => {
     const profileButton = screen.getByRole('button', { name: /account of current user/i });
     fireEvent.click(profileButton);
 
-    const profileMenuItem = await screen.findByRole('menuitem', { name: /profile/i });
+    const profileMenuItem = await screen.findByRole('menuitem', { name: /Meus pontos/i });
     fireEvent.click(profileMenuItem);
 
     expect(redirect).toHaveBeenCalledWith('/profile');

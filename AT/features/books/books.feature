@@ -18,3 +18,10 @@ Funcionalidade: Listar livros
       Dado que eu esteja com os detalhes do livro aberto
       Quando eu clicar no botão "Marcar como lido"
       Então eu devo viasualizar o livro marcado com "Já li"
+
+    Cenario: Cliente visualiza seus pontos e troféus
+
+      Dado que eu esteja na pagina principal
+      E eu tenha marcado alguns livros como lidos
+      Quando eu clicar no botão "Meus pontos"
+      Então eu devo viasualizar meus pontos e troféus
