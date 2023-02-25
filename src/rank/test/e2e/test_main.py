@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 import random
 
 from app.main import app, get_current_user
+from app.models import User
 from test.helpers import makeBook
 
 client = TestClient(app)
@@ -10,7 +11,8 @@ client = TestClient(app)
 
 def mark_book(book, user_id='1'):
 
-    app.dependency_overrides[get_current_user] = lambda: user_id
+    app.dependency_overrides[get_current_user] = lambda: User(
+        id=user_id, name="User 1")
     response = client.post(f"/books/user/mark", json=book)
     return response
 
@@ -95,4 +97,23 @@ def test_should_get_user_trophies():
     assert response.status_code == 200
     assert response.json() == [{
         'category': 'fiction',
+    }]
+
+
+def test_should_get_users_ranking():
+    user_id = make_user_id()
+    for _ in range(5):
+        request = makeBook()
+        request["pages"] = 1000000000
+        mark_book(request, user_id=user_id)
+
+    response = client.get(f"/users/ranking", params={"qnt": 1})
+
+    assert response.status_code == 200
+    assert response.json() == [{
+        'user': {
+            'id': user_id,
+            'name': 'User 1',
+        },
+        'points': 50000005,
     }]

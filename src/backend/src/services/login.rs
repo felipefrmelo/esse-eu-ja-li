@@ -9,7 +9,7 @@ pub trait UserRepository {
 pub fn handle(
     email: &str,
     password: &str,
-    generate_token: fn(id: &str) -> String,
+    generate_token: fn(id: &str, name: &str) -> String,
     repo: &impl UserRepository,
 ) -> Result<Token, LoginError> {
     let user = repo.find_user_by_email(email);
@@ -19,7 +19,7 @@ pub fn handle(
     check_password(password, &user.password)?;
 
     Ok(Token {
-        access_token: generate_token(&user.id),
+        access_token: generate_token(&user.id, &user.name),
         name: user.name.to_string(),
     })
 }
@@ -49,7 +49,7 @@ mod tests_services {
 
     use super::*;
 
-    fn generate_token(_id: &str) -> String {
+    fn generate_token(_id: &str, _name: &str) -> String {
         String::from("test_token")
     }
 
@@ -66,7 +66,7 @@ mod tests_services {
     #[test]
     fn should_create_a_token_when_give_a_valid_credentials() {
         let token_expected = Token {
-            access_token: generate_token(""),
+            access_token: generate_token("", ""),
             name: "test".to_string(),
         };
 
