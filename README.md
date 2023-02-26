@@ -24,3 +24,5 @@ Baseado nessa descrição as seguintes tarefas devem ser realizadas:
 
 Burndown chat (https://docs.google.com/spreadsheets/d/1NbYN3CI-5Jai_YakHLiFf9j1gUMXGmik0Y3zl1vJGa4/edit#gid=447969570)
 
+Link para o site http://177.93.129.94/signin
+
