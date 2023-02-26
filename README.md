@@ -1,4 +1,4 @@
-# Esse eu já li
+# [Esse eu já li](http://177.93.129.94/signin)
 
 O objetivo dessa tarefa é que os alunos especifiquem, planejem, modelem, implementem e testem de forma completa um pequeno sistema, assemelhado ao Livros a Jato usado em parte do curso. O sistema pode ser implementado em qualquer linguagem, porém para os alunos que estão fazendo os cursos do Programa de Cursos Integrados em sequência, recomenda-se que a implementação seja feita em Java.
 
@@ -23,3 +23,4 @@ Baseado nessa descrição as seguintes tarefas devem ser realizadas:
 - [Sprints](https://github.com/users/felipefrmelo/projects/10/views/9)
 
 Burndown chat (https://docs.google.com/spreadsheets/d/1NbYN3CI-5Jai_YakHLiFf9j1gUMXGmik0Y3zl1vJGa4/edit#gid=447969570)
+
