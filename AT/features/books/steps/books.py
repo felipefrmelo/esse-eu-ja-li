@@ -15,16 +15,24 @@ def buscar_livros(context):
     context.browser.find_element(By.XPATH, '//button[text()="Buscar"]').click()
 
 
-def login(context):
-    context.browser.find_element(By.ID, 'email').send_keys("test@test.com")
-    context.browser.find_element(By.ID, 'password').send_keys('123456')
+def login(context, email="test1@test.com", password="123456"):
+    context.browser.find_element(By.ID, 'email').send_keys(email)
+    context.browser.find_element(By.ID, 'password').send_keys(password)
     context.browser.find_element(By.ID, 'password').send_keys(Keys.RETURN)
+    time.sleep(TIME_SLEEP*1.5)
 
 
 @given('que eu esteja na pagina principal')
 def step_impl(context):
     context.browser.get('http://localhost/signin')
     login(context)
+    time.sleep(TIME_SLEEP)
+
+
+@given('que eu esteja na pagina principal logado com "{email}" e "{password}"')
+def step_impl(context, email, password):
+    context.browser.get('http://localhost/signin')
+    login(context, email, password)
     time.sleep(TIME_SLEEP)
 
 
@@ -103,3 +111,8 @@ def step_impl(context):
     time.sleep(TIME_SLEEP*5)
     context.browser.find_element(By.XPATH, '//h6[text()="Pontos"]')
     context.browser.find_element(By.XPATH, '//h6[text()="Troféus"]')
+
+
+@then(u'eu devo viasualizar o ranking de leitores')
+def step_impl(context):
+    time.sleep(TIME_SLEEP*5)
