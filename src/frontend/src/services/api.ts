@@ -1,3 +1,4 @@
+import { Rank } from '../components/rank';
 import { Book, markBook } from '../domain/book';
 import { Stats } from '../pages/profile';
 import { AuthResponse } from '../providers/auth';
@@ -107,6 +108,19 @@ export const getUserStats = async (): Promise<Stats> => {
       points: pointsData,
       trophies: trophiesData,
     };
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getUserRanking = async (): Promise<Rank[]> => {
+  try {
+    const res = await fetchApi(`${RANK_URL}/users/ranking`, {
+      method: 'GET',
+    });
+
+    if (!res.ok) throw new ServerError();
+    return await res.json();
   } catch (error) {
     throw error;
   }

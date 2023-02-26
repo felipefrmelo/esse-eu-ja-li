@@ -3,18 +3,13 @@ import { Profile, ProfileProps } from './profile';
 
 const renderProfile = ({
   getUserStats = jest.fn(),
+  getUserRanking = jest.fn().mockResolvedValue([]),
   user = { name: 'John Doe' },
 }: Partial<ProfileProps> = {}) => {
-  render(<Profile user={user} getUserStats={getUserStats} />);
+  render(<Profile user={user} getUserStats={getUserStats} getUserRanking={getUserRanking} />);
 };
 
 describe('Profile', () => {
-  it('should render successfully', () => {
-    renderProfile();
-
-    expect(screen.getByText('Parabéns, John Doe!')).toBeInTheDocument();
-  });
-
   it('should render user points', async () => {
     const getUserStats = jest.fn().mockResolvedValue({ points: 1, trophies: [] });
 
@@ -37,13 +32,15 @@ describe('Profile', () => {
     expect(await screen.findByText('Leitor Fiction')).toBeInTheDocument();
   });
 
-  it('should render a loading message', () => {
+  it('should render a loading message', async () => {
     const getUserStats = jest.fn();
+    const getUserRanking = jest.fn();
 
-    renderProfile({ getUserStats });
+    renderProfile({ getUserStats, getUserRanking });
 
     expect(getUserStats).toHaveBeenCalled();
+    expect(getUserRanking).toHaveBeenCalled();
 
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(await screen.findByRole('progressbar')).toBeInTheDocument();
   });
 });

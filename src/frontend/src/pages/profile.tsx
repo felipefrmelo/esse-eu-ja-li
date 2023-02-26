@@ -1,6 +1,7 @@
 import { EmojiEventsTwoTone } from '@mui/icons-material';
 import { CircularProgress, Typography, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { Rank, Ranking } from '../components/rank';
 import { RequireUser } from '../components/require-auth';
 
 type Trophy = {
@@ -15,6 +16,7 @@ export type Stats = {
 export interface ProfileProps {
   user: RequireUser;
   getUserStats: () => Promise<Stats>;
+  getUserRanking: () => Promise<Rank[]>;
 }
 
 const ShowStats = ({ stats }: { stats?: Stats }) => {
@@ -37,19 +39,29 @@ const ShowStats = ({ stats }: { stats?: Stats }) => {
         </Grid>
       </Grid>
 
-      {stats.trophies.map((trophy) => (
-        <Grid item fontSize={100} container flexDirection="column" alignItems="center" xs={6} key={trophy.category}>
-          <EmojiEventsTwoTone fontSize="inherit" sx={{ color: 'goldenrod' }} />
-          <Typography variant="subtitle2" align="center">
-            Leitor {trophy.category}
-          </Typography>
-        </Grid>
-      ))}
+      <Grid container item xs={12}>
+        {stats.trophies.map((trophy) => (
+          <Grid
+            item
+            fontSize={100}
+            container
+            flexDirection="column"
+            alignItems="center"
+            xs={6}
+            key={trophy.category}
+          >
+            <EmojiEventsTwoTone fontSize="inherit" sx={{ color: 'goldenrod' }} />
+            <Typography variant="subtitle2" align="center">
+              Leitor {trophy.category}
+            </Typography>
+          </Grid>
+        ))}
+      </Grid>
     </Grid>
   );
 };
 
-export const Profile = ({ user, getUserStats }: ProfileProps) => {
+export const Profile = ({ user, getUserStats, getUserRanking }: ProfileProps) => {
   const [stats, setStats] = useState<Stats>();
 
   useEffect(() => {
@@ -65,11 +77,14 @@ export const Profile = ({ user, getUserStats }: ProfileProps) => {
     <Grid container spacing={5} justifyContent="center">
       <Grid item xs={12}>
         <Typography variant="h3" align="center">
-            Parabéns, {user.name}!
+          Parabéns, {user.name}!
         </Typography>
       </Grid>
       <Grid item xs={12}>
         <ShowStats stats={stats} />
+      </Grid>
+      <Grid item xs={12}>
+        <Ranking getRank={getUserRanking} />
       </Grid>
     </Grid>
   );
