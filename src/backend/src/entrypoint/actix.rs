@@ -20,6 +20,15 @@ fn config(cfg: &mut web::ServiceConfig) {
         .route("/books", web::get().to(list_books));
 }
 
+fn make_user(number: i32, name: &str) -> User {
+    User::with_id(
+        &format!("{}", number),
+        &format!("test{}@test.com", number),
+        &password_hash::hash("123456"),
+        name,
+    )
+}
+
 fn app() -> App<
     impl ServiceFactory<
         ServiceRequest,
@@ -29,11 +38,16 @@ fn app() -> App<
         Error = Error,
     >,
 > {
-    let repo = UserRepositoryInMemory::new(vec![User::new(
-        "test@test.com",
-        &password_hash::hash("123456"),
-        "test",
-    )]);
+    let repo = UserRepositoryInMemory::new(vec![
+        make_user(1, "John Doe"),
+        make_user(2, "Jane Smith"),
+        make_user(3, "Alice Jones"),
+        make_user(4, "Bob Smith"),
+        make_user(5, "Charlie Brown"),
+        make_user(6, "David Jones"),
+        make_user(7, "Eve Smith"),
+        make_user(8, "Frank Brown"),
+    ]);
 
     let cors = Cors::default()
         .allowed_origin(&format!(
@@ -75,7 +89,7 @@ mod tests {
         let mut app = test::init_service(app()).await;
 
         let payload = LoginRequest {
-            email: "test@test.com".to_string(),
+            email: "test1@test.com".to_string(),
             password: "123456".to_string(),
         };
 

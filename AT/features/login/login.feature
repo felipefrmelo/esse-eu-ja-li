@@ -9,4 +9,4 @@ Funcionalidade: Logar no sistema
 
      Exemplos: Clientes de teste
        | email         | senha |
-       | test@test.com | 123456 |
+       | test1@test.com | 123456 |

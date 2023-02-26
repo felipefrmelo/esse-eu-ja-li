@@ -18,6 +18,15 @@ impl User {
             name: name.to_string(),
         }
     }
+
+    pub fn with_id(id: &str, email: &str, password: &str, name: &str) -> Self {
+        Self {
+            id: id.to_string(),
+            email: email.to_string(),
+            password: password.to_string(),
+            name: name.to_string(),
+        }
+    }
 }
 
 #[cfg(test)]
