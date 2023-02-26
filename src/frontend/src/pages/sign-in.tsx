@@ -11,8 +11,9 @@ import Typography from '@mui/material/Typography';
 import backgroundImg from '../img/dog-reading.jpg';
 import { Copyright } from '../components/copyright';
 import Alert from '@mui/material/Alert';
-import { useEffect } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useAuthContext } from '../providers/auth';
+import { AlertTitle } from '@mui/material';
 
 interface SignInProps {
   redirect: (path: string) => void;
@@ -20,6 +21,12 @@ interface SignInProps {
 
 export const SignIn = ({ redirect }: SignInProps) => {
   const { user, login, error } = useAuthContext();
+
+  const [showTip, setShowTip] = useState(false);
+
+  const handleShowTip = (event: ChangeEvent<HTMLInputElement>) => {
+    setShowTip(event.target.checked);
+  };
 
   useEffect(() => {
     if (user) redirect('/');
@@ -86,9 +93,29 @@ export const SignIn = ({ redirect }: SignInProps) => {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={
+                <Checkbox
+                  value="remember"
+                  color="primary"
+                  checked={showTip}
+                  onChange={handleShowTip}
+                />
+              }
               label="Dica"
             />
+            {showTip && (
+              <Alert severity="info">
+                <AlertTitle>Credenciais</AlertTitle>
+                <Typography variant="body2">
+                  <strong>email: </strong>
+                  test1@test.com
+                </Typography>
+                <Typography variant="body2">
+                  <strong>senha: </strong>
+                  123456
+                </Typography>
+              </Alert>
+            )}
             <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
               Login
             </Button>

@@ -81,4 +81,17 @@ describe('SignIn', () => {
 
     expect(redirect).not.toBeCalled();
   });
+
+  it('should show a tip when click o checkbox', async () => {
+    renderSign();
+
+    const checkbox = screen.getByLabelText(/Dica/i);
+    fireEvent.click(checkbox);
+
+    const email = await screen.findByText(/test1@test.com/i);
+    const password = await screen.findByText(/123456/i);
+
+    expect(email).toBeInTheDocument();
+    expect(password).toBeInTheDocument();
+  })
 });
